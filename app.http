@@ -1,0 +1,26 @@
+POST http://127.0.0.1:8002/notes/
+Content-Type: application/json
+
+{
+    "title": "Python Library",
+    "content": "Use the Python decouple lib to hide your secrets"
+}
+
+###
+
+GET http://127.0.0.1:8002/notes/
+
+###
+GET http://127.0.0.1:8002/notes/667684d3-974d-4d23-8ec2-fccacd93b608
+
+###
+PUT http://127.0.0.1:8002/notes/667684d3-974d-4d23-8ec2-fccacd93b608
+Content-Type: application/json
+
+{
+    "title": "Python Library Python Decouple",
+    "content": "Use the Python decouple lib to hide your secrets"
+}
+
+###
+DELETE http://127.0.0.1:8002/notes/667684d3-974d-4d23-8ec2-fccacd93b608
