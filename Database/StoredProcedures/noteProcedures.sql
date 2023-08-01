@@ -49,3 +49,11 @@ BEGIN
 END
 GO
 
+-- procedure to check if a note with the same content already exists
+CREATE OR ALTER PROCEDURE checkNoteWithExistingContentProc
+    @content NVARCHAR(MAX)
+AS
+BEGIN
+    SELECT * FROM Note WHERE Content = @content
+END
+GO

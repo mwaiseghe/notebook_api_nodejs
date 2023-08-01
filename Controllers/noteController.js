@@ -6,10 +6,32 @@ const createNote = async (req, res) => {
   try {
     createNoteTable();
     const { title, content } = req.body;
+
+    // Check if title and content are empty
+    if (!title || !content) {
+      return res.status(400).json({
+        message: "Title and content are required",
+      });
+    }
+
     const id = v4();
     const createdAt = new Date();
 
     const pool = await mssql.connect(sqlConfig);
+
+    // validate if note with same content exists
+    const find_note = await mssql.connect(sqlConfig);
+    const find_note_request = await find_note
+      .request()
+      .input("Content", mssql.NVarChar, content)
+      .execute("checkNoteWithExistingContentProc");
+
+    if (find_note_request.rowsAffected[0] === 1) {
+      return res.status(400).json({
+        message: "Note with same content already exists",
+      });
+    }
+
     const request = await pool
       .request()
       .input("ID", mssql.VarChar, id)
@@ -104,6 +126,17 @@ const deleteNote = async (req, res) => {
   try {
     const { id } = req.params;
     const pool = await mssql.connect(sqlConfig);
+    // validate if note exists
+    const find_note = await mssql.connect(sqlConfig);
+    const find_note_request = await find_note
+      .request()
+      .input("ID", mssql.VarChar, id)
+      .execute("getSingleNoteProc");
+
+    if (find_note_request.rowsAffected[0] === 0) {
+      return res.status(404).json({ message: "Note not found" });
+    }
+    
     const request = await pool
       .request()
       .input("ID", mssql.VarChar, id)
