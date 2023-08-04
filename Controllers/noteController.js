@@ -23,12 +23,13 @@ const createNote = async (req, res) => {
     const find_note = await mssql.connect(sqlConfig);
     const find_note_request = await find_note
       .request()
+      .input("Title", mssql.VarChar, title)
       .input("Content", mssql.NVarChar, content)
       .execute("checkNoteWithExistingContentProc");
 
     if (find_note_request.rowsAffected[0] === 1) {
       return res.status(400).json({
-        message: "Note with same content already exists",
+        message: "Note with same content and already exists",
       });
     }
 
@@ -59,7 +60,10 @@ const getNotes = async (req, res) => {
   try {
     const pool = await mssql.connect(sqlConfig);
     const request = await pool.request().execute("getNotesProc");
-    return res.status(200).json(request.recordset);
+    return res.status(200).json({
+        notes: request.recordset
+    }
+      );
   } catch (error) {
     return res.status(500).json({
         error: error.message
@@ -75,10 +79,17 @@ const getSingleNote = async (req, res) => {
       .request()
       .input("ID", mssql.VarChar, id)
       .execute("getSingleNoteProc");
-    return res.status(200).json(request.recordset);
+    if (request.rowsAffected[0] === 0) {
+      return res.status(404).json({ 
+        message: "Note does not exist" 
+      });
+    }
+    return res.status(200).json({
+        note: request.recordset[0]
+    });
   } catch (error) {
-    return res.status(500).json({
-        error: error.message 
+    return res.status(500).json({ 
+      error: error.message
     });
   }
 };
@@ -114,9 +125,13 @@ const updateNote = async (req, res) => {
       .execute("updateNoteProc");
 
     if (request.rowsAffected[0] === 1) {
-      return res.status(200).json({ message: "Note updated successfully" });
+      return res.status(200).json({ 
+        message: "Note updated successfully" 
+      });
     }
-    return res.status(400).json({ message: "Note not updated" });
+    return res.status(400).json({ 
+      message: "Note not updated" 
+    });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

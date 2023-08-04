@@ -51,9 +51,10 @@ GO
 
 -- procedure to check if a note with the same content already exists
 CREATE OR ALTER PROCEDURE checkNoteWithExistingContentProc
+    @title VARCHAR(100),
     @content NVARCHAR(MAX)
 AS
 BEGIN
-    SELECT * FROM Note WHERE Content = @content
+    SELECT * FROM Note WHERE Title = @title AND Content = @content
 END
 GO
