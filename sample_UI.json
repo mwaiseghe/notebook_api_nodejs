@@ -1,0 +1,10 @@
+Need to accomplish similar json for customers
+
+CustomerCreate
+CustomerDelete
+CustomerProfile
+CustomerPayment
+
+I should be able to see the api design in HML
+
+Ayone should e able to use the JSON and feed to swagger UI editor and it should display HTML for anyone using your JSON design

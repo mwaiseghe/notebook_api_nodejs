@@ -10,7 +10,7 @@ ramp-up and ramp-down of virtual users
     { duration: '30s', target: 20 }, 
     // stay at 10 users for 1 minute 30 seconds
     { duration: '1m30s', target: 10 }, 
-    // ramp-down to 0 users over 20 seconds
+    // ramp-down to 0 users over 20 seconds 
     { duration: '20s', target: 0 }, 
   ],
 };

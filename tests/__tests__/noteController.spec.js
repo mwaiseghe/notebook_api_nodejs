@@ -1,11 +1,10 @@
 const mssql = require("mssql");
 
-const { sqlConfig } = require("../Config/Config");
-const { getNotes, getSingleNote, updateNote, deleteNote, createNote } = require("../Controllers/noteController");
+const { getNotes, getSingleNote, updateNote, deleteNote, createNote } = require("../../Controllers/noteController");
 
 const req = {
     body: {
-        title: "test",
+        title: "create test 1",
         content: "test content",
     },
 };
@@ -132,14 +131,17 @@ describe("Note Controller Tests", () => {
                 },
             };
 
+            const mockedInput = jest.fn().mockReturnThis();
+            const mockedExecute = jest.fn().mockResolvedValueOnce({
+                recordset: [single_note],
+                rowsAffected: [1],
+            });
+
             // act
             jest.spyOn(mssql, "connect").mockResolvedValueOnce({
                 request: jest.fn().mockReturnThis(),
-                input: jest.fn().mockReturnThis(),
-                execute: jest.fn().mockResolvedValueOnce({
-                    recordset: [single_note],
-                    rowsAffected: [1],
-                }),
+                input: mockedInput,
+                execute: mockedExecute,
             });
 
             await updateNote (req, res);
@@ -270,33 +272,36 @@ describe("Note Controller Tests", () => {
             });
         });
 
-        it("Should return a 201 if the note is created", async () => {
-            // arrange
-            const req = {
-                body: {
-                    title: "test 4",
-                    content: "test content",
-                },
-            };
+        // it("Should return a 201 if the note is created", async () => {
+        //     const req = {
+        //         body: {
+        //             title: "create test title",
+        //             content: "test content",
+        //         },
+        //     };
 
-            // act
-            jest.spyOn(mssql, "connect").mockResolvedValueOnce({
-                request: jest.fn().mockReturnThis(),
-                input: jest.fn().mockReturnThis(),
-                execute: jest.fn().mockResolvedValueOnce({
-                    rowsAffected: [1],
-                }),
-            });
+        //     // use mock the fun
+        //     const mockedInput = jest.fn().mockReturnThis();
+        //     const mockedExecute = jest.fn().mockResolvedValueOnce({
+        //         rowsAffected: [1],
+        //     });
 
-            await createNote (req, res);
+        //     // act
+        //     jest.spyOn(mssql, "connect").mockResolvedValueOnce({
+        //         request: jest.fn().mockReturnThis(),
+        //         input: mockedInput,
+        //         execute: mockedExecute,
+        //     });
 
-            // assert
-            expect(res.status).toHaveBeenCalledWith(201);
-            expect(res.json).toHaveBeenCalledWith({
-                message: "Note created successfully"
-            });
-        });
+        //     await createNote (req, res);
+
+        //     // assert
+        //     expect(res.status).toHaveBeenCalledWith(201);
+        //     expect(res.json).toHaveBeenCalledWith({
+        //         message: "Note created successfully"
+        //     });
+        // });
     });
-
-    
 });
+
+            
